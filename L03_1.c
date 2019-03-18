@@ -69,3 +69,60 @@ int main()
     return 0;
 }
 /* NADAM SE  I JA SAM DA NECU CITATI KOD */
+
+/* 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+
+char * konkatenacija(int n, ...);
+
+int main()
+{
+  char *s;
+  s = konkatenacija(3,
+    123,456,789);
+  printf("%s", s);
+  free(s);
+  return 0;
+}
+
+char * konkatenacija(int n, ...)
+{
+  char *result = 0;
+  int next;
+  int i;
+  va_list args;
+  va_start(args, n);
+
+  for (i = 0; i < n; i++)
+  {
+    int len = result ? strlen(result) : 0;
+    next = va_arg(args, int);
+    int d = next;
+    int br = 0;
+    while (d){br++;d/=10;}
+    char t[100];
+    char *tmp = (char *)malloc(len + br + 1);
+    itoa(next, t, 10);
+    int we= 0;
+    while (t[we])
+    {
+        *(tmp + we) = t[we];
+        we++;
+    }
+
+    strcpy(tmp, result ? result : "");
+    strcat(tmp, t);
+
+    free(result);
+    result = tmp;
+  }
+  va_end(args);
+  return result;
+}
+
+
+*/
