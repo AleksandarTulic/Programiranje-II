@@ -4,36 +4,36 @@
 
 int paran(int n)
 {
-    return !(n % 2);
+    return !(n % 2); /* AKO JE PARAN VRATI 1 U SUPROTNOM 0 */
 }
 
 int pozitivan(int n)
 {
-    if ( n > 0 ) return 1;
+    if ( n > 0 ) return 1; /* AKO JE BROJ POZ. */
     return 0;
 }
 
 void serija(int *niz, int n, int (*s)(int), int **pocetak, int *duzina)
 {
     int poz = -1;
-    int poc = -1;
+    int poc = -1; /* PAMTI POZICIJU POCETKA NAJVECEG PODNIZA */
     int br = 0;
-    int maks = -2e9;
+    int maks = -2e9; /* PAMTI DUZINU NAJVECEG PODNIZA */
     int i;
 
     for (i=0;i<n;i++)
     {
-        int clan = (*s)(*(niz + i));
+        int clan = (*s)(*(niz + i)); /* GLEDAM USLOV ZA SVAKI BROJ NA POZICIJAMA I */
 
-        if ( poz == -1 && clan )
+        if ( poz == -1 && clan ) /* AKO JE PONADJEN PARAN(POZITIVAN) BROJ PRVI PUT */
         {
             br++;
             poz = i;
         }
-        else if ( poz != -1 && clan )
+        else if ( poz != -1 && clan ) /* AKO JE PRONADJEN PARAN(POZITIVAN) BROJ */
         {
             br++;
-            if ( i == n - 1 )
+            if ( i == n - 1 ) /* AKO JE ZADNJI ELEMENT MOZE ISPUNJAVATI PRETHODNI ZADATAK I MOZE BITI NAJVECI PODNIZ */
             {
                 if ( maks < br )
                 {
@@ -42,7 +42,7 @@ void serija(int *niz, int n, int (*s)(int), int **pocetak, int *duzina)
                 }
             }
         }
-        else if ( poz != -1 && !clan )
+        else if ( poz != -1 && !clan ) /* AKO JE SADASNJI ELEMENT NE ISPUNJAVA USLOV PROVJERIRI KOJI JE VECI PODNIZ */
         {
             if ( maks < br )
             {
