@@ -58,12 +58,12 @@ int main(int argc, char *argv[])
 
     if ( red1 > red2 )
     {
-        if ( suma != 0 ) printf(ispis_suma, suma);printf("\n");
+        if ( suma != 0 ) { printf(ispis_suma, suma);printf(" "); }
         if ( rj != "" ) printf(ispis_rijec, rj);
     }
     else
     {
-        if ( rj != "" ) printf(ispis_rijec, rj);printf("\n");
+        if ( rj != "" ) { printf(ispis_rijec, rj);printf(" "); }
         if ( suma != 0 ) printf(ispis_suma, suma);
     }
     return 0;
