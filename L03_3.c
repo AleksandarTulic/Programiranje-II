@@ -18,7 +18,6 @@ char *dodaj(char *a, char *b)
 
     char *prenos;
     prenos = rijec;
-    printf("%s\n", prenos);
     return prenos;
 }
 
@@ -50,7 +49,6 @@ void spoji_saberi(int argc, char *argv[], char* (*dodaj)(char*, char*), int (*sa
 
 int main(int argc, char *argv[])
 {
-    printf("Br: %d\n", argc);
     spoji_saberi(argc, argv, &dodaj, &saberi);
 
     char ispis_suma[] = "Suma brojeva je %d.";
