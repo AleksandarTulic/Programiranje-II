@@ -31,9 +31,11 @@ void spoji_saberi(int argc, char *argv[], char* (*dodaj)(char*, char*), int (*sa
     int i;int flag = -1;int pazi = -1;
     for (i=1;i<argc;i++)
     {
-        if ( argv[i][0] == '-' && argv[i][1] == 's' ) { flag = 1; pazi = 1; if (red1==-1) red1=i; }
-        else if ( argv[i][0] == '-' && argv[i][1] == 'b' ) { flag = 2; pazi = 2; if (red2==-1) red2=i; }
-
+        if ( argv[i][0] == '-' && argv[i][1] == 's' ) { flag = 1; pazi = 1; if (red1==-1) red1=i; } /* FLAG KORISTIM DA ZNAM KOJA OPERACIJA */
+        else if ( argv[i][0] == '-' && argv[i][1] == 'b' ) { flag = 2; pazi = 2; if (red2==-1) red2=i; } /* RED KORISTIM KOJI SE PRVI POJAVLJUJE */
+  
+        /* PAZI KORISTIM DA VIDIM DA LI JE NA TOM MJESTU PRONADJEN ZNAK ZA NAREDBU -B ILI -S */
+        
         if ( flag == 1 )
         {
             if ( pazi != 1 ) rj = (*dodaj)(rj, argv[i]);
@@ -54,7 +56,7 @@ int main(int argc, char *argv[])
     char ispis_suma[] = "Suma brojeva je %d.";
     char ispis_rijec[] = "String je '%s'.";
 
-    if ( red1 > red2 )
+    if ( red1 > red2 ) /* PAZIM KOJA SE PRVO NAREDBA POJAVLJUJE (REDOSLIJED ISPISA) */
     {
         if ( suma != 0 ) { printf(ispis_suma, suma);printf(" "); }
         if ( rj != "" ) printf(ispis_rijec, rj);
