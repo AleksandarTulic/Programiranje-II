@@ -68,3 +68,24 @@ int main(int argc, char *argv[])
     }
     return 0;
 }
+
+/*
+
+char *substring(char *str, int a, int b)
+{
+    int duzina = str ? strlen(str) : 0;
+
+    if ( !duzina ) return "";
+
+    char *stri = (char*)malloc(sizeof(char) * duzina + 1); stri = str;
+    printf("%s\n", stri);
+
+    char *strin = (char*)malloc(sizeof(char) * (duzina - b + a) + 1);
+    int i = 0;int j = 0;
+    for (i=a;i<=b;i++) *(strin + j++) = *(stri + i); *(strin + ++j) = '\0';
+
+    char *vrati = strin;
+    return vrati;
+}
+
+*/
