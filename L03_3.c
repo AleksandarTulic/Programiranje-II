@@ -71,14 +71,13 @@ int main(int argc, char *argv[])
 
 /*
 
-char *substring(char *str, int a, int b)
+char *substring(char *str, int a, int b) // pronalazi substring od stringa str poceci od karaktera koji se nalazi na a do b
 {
     int duzina = str ? strlen(str) : 0;
 
     if ( !duzina ) return "";
 
     char *stri = (char*)malloc(sizeof(char) * duzina + 1); stri = str;
-    printf("%s\n", stri);
 
     char *strin = (char*)malloc(sizeof(char) * (duzina - b + a) + 1);
     int i = 0;int j = 0;
