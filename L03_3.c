@@ -75,7 +75,7 @@ char *substring(char *str, int a, int b) // pronalazi substring od stringa str p
 {
     int duzina = str ? strlen(str) : 0;
 
-    if ( !duzina ) return "";
+    if ( !duzina || b > duzina || a > duzina || a > b ) return "";
 
     char *stri = (char*)malloc(sizeof(char) * duzina + 1); stri = str;
 
