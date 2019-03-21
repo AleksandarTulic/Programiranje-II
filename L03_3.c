@@ -126,3 +126,41 @@ char *dodaj(char *a, char *b) //DODAJE NA STRING A PRVO SLOVO STRINGA B
 }
 
 */
+
+/*
+
+char *dodaj(char *a, char *b) //DODAJE NA STRING A PRVO SLOVO STRINGA B
+{
+    char *vrati;
+
+    char *b_string = (char*)malloc(sizeof(char) * strlen(b) + 1); b_string = b; *(b_string + strlen(b)) = '\0';
+
+    int flag = a ? strlen(a) : 0;
+
+    if ( flag )
+    {
+        char *a_string = (char*)malloc(sizeof(char) * strlen(a) + 1); a_string = a; *(a_string + strlen(a)) = '\0';
+
+        char *string = (char*)malloc(sizeof(char) * strlen(a) + 2); int i;
+
+        for (i=0;i<strlen(a);i++) *(string + i) = *(a_string + i);
+
+        *(string + strlen(a)) = *(b_string + 0);
+        *(string + strlen(a) + 1) = '\0';
+
+        vrati = string;
+    }
+    else
+    {
+        char *string = (char*)malloc(2);
+
+        *(string + 0) = *(b_string + 0);
+        *(string + 1) = '\0';
+
+        vrati = string;
+    }
+
+    return vrati;
+}
+
+*/
