@@ -88,3 +88,41 @@ char *substring(char *str, int a, int b) // pronalazi substring od stringa str p
 }
 
 */
+
+/*
+
+char *dodaj(char *a, char *b) //DODAJE NA STRING A PRVO SLOVO STRINGA B
+{
+    char *p;
+    char *t1 = (char*)malloc(sizeof(char) * strlen(b) + 1); t1 = b;
+    *(t1 + strlen(b)) = '\0';
+
+    int duzina = a ? strlen(a) : 0;
+
+    if ( duzina )
+    {
+        char *t2 = (char*)malloc(sizeof(char) * strlen(a) + 1); t2 = a;
+        *(t2 + strlen(a)) = '\0';
+
+        char *t3 = (char*)malloc(sizeof(char) * strlen(a) + 2);
+        int i;
+        for (i=0;i<strlen(a);i++) *(t3 + i) = *(t2 + i);
+        *(t3 + strlen(a)) = *(t1 + 0);
+        *(t3 + strlen(a) + 1) = '\0';
+
+        p = t3;
+    }
+    else
+    {
+        char *r = (char*)malloc(2);
+        *(r + 0) = *(t1 + 0);
+        *(r + 1) = '\0';
+        p = r;
+    }
+
+    printf("%s sta\n", t1);
+
+    return p;
+}
+
+*/
