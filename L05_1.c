@@ -7,7 +7,6 @@ typedef struct naz{ char ime[21], prezime[21], broj[21]; } NAZIV; /* NEKAKVA STR
 
 void unos_podataka()
 {
-
     FILE *fp = fopen(naziv, "ab");
 
     if ( fp == NULL ) { printf("Greska!!!\n"); return;  }
