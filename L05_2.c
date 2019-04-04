@@ -37,13 +37,16 @@ void unos_podataka(char *argv[])
     fclose(fp);
 }
 
-void prikaz()
+void prikaz(char *argv[])
 {
     char fajl[100];
     printf("Citanje: \n");
     scanf("%s", fajl);
 
-    FILE *fp = fopen(fajl, "rb");
+    FILE *fp;
+    if(fajl[0] == '#')
+    fp= fopen(argv[1], "rb");
+    else fp= fopen(fajl, "rb");
 
     char tekst[100];
     while (fread(&tekst, sizeof(tekst), 1, fp) )
@@ -62,6 +65,6 @@ int main(int argc, char *argv[])
     scanf("%d", &vrsta);
 
     if ( vrsta == 1 ) unos_podataka(argv);
-    else prikaz();
+    else prikaz(argv);
     return 0;
 }
