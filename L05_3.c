@@ -17,7 +17,6 @@ void sortiraj() /* COUNTING SORT */
 
 void unos(char *argv[])
 {
-    sortiraj();
     FILE *fp = fopen(argv[1], "ab");
 
     int i = 0;
@@ -27,13 +26,17 @@ void unos(char *argv[])
     fclose(fp);
 }
 
-void prikaz()
+void prikaz(char *argv[])
 {
     char naziv[100];
     printf("Datoteka: \n");
     scanf("%s", naziv);
 
-    FILE *fp = fopen(naziv, "rb");
+
+    FILE *fp;
+    if(naziv[0] == '#') fp= fopen(argv[1], "rb");
+    else fp= fopen(naziv, "rb");
+
 
     int broj;
 
@@ -51,8 +54,8 @@ int main(int argc, char *argv[])
 
     printf("Unesite elemente:\n"); int i = 0;
     for (;i<br;i++) scanf("%d", &niz[i]);
-
+    sortiraj();
     unos(argv);
-    prikaz();
+    prikaz(argv);
     return 0;
 }
