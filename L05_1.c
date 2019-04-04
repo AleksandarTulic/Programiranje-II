@@ -7,7 +7,8 @@ typedef struct naz{ char ime[21], prezime[21], broj[21]; } NAZIV; /* NEKAKVA STR
 
 void unos_podataka()
 {
-    FILE *fp = fopen(naziv, "ab"); /* OTVARAM U FORMATU ab ZA APPEND DA NALIJEPIM NA KRAJ */
+
+    FILE *fp = fopen(naziv, "ab");
 
     if ( fp == NULL ) { printf("Greska!!!\n"); return;  }
 
@@ -17,7 +18,7 @@ void unos_podataka()
 
     while (koliko--) /* UNOSIMO koliko OSOBA */
     {
-        NAZIV podatak; 
+        NAZIV podatak;
         scanf("%s %s %s", podatak.ime, podatak.prezime, podatak.broj); /* USNOSIMO PODATKE O SVAKOJ OSOBI */
 
         fwrite(&podatak, sizeof(NAZIV), 1, fp); /* USIDUJEMO PODATKE O SVAKOJ OSOBI U BINARNU DATOTEKU */
@@ -26,30 +27,30 @@ void unos_podataka()
     fclose(fp);
 }
 
-void citanje_podataka()
+void citanje_podataka(char* str)
 {
-    FILE *fp = fopen(naziv, "rb");
+    FILE *fp;
+    if (naziv[0] == '#') fp = fopen(str, "rb"); /* OTVARAM U FORMATU ab ZA APPEND DA NALIJEPIM NA KRAJ */
+    else fp = fopen(naziv, "rb");
 
     if ( fp == NULL ) { printf("Greska!!!\n"); return; }
 
     NAZIV podatak;
     while ( fread(&podatak, sizeof(NAZIV), 1, fp) ) /* CITAM PODATKE IZ BINARNE DATOTEKE U FORMATU GORE DEF. STRUKTURE */
-    {
         printf("%s %s %s\n", podatak.ime, podatak.prezime, podatak.broj);
-    }
 
     fclose(fp);
 }
 
-int main()
+int main(int argc,char *argv[])
 {
     printf("Unesite naziv datoteke: ");
     scanf("%s", naziv);
 
-    int vrsta; printf("Citanje podataka: 2\nUnos podataka: 1\n");
+    int vrsta; printf("\nUnos podataka: 1\nCitanje podataka: 2\n\n");
     scanf("%d", &vrsta);
-
+    char *str = argv[1];
     if ( vrsta == 1 ) unos_podataka(); /* RADIM OVAJ USLOV DA BIH (NIJE BIH KAO BOSNA I HERCEGOVINA NEGO bih) ZNAO KOJU OPERACIJU DA URADIM  */
-    else citanje_podataka();
+    else citanje_podataka(str);
     return 0;
 }
