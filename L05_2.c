@@ -68,3 +68,16 @@ int main(int argc, char *argv[])
     else prikaz(argv);
     return 0;
 }
+
+/*
+
+POMJERI - vrsi iplementaciju pomjeranja slova za odgovarajuci broj mjesta ( n < 26 )
+PRIKAZ - sluzi za prikazivanje elemenata
+    - receno je ako je prvi argument komandne linije # onda koristiti prvi argument komandne linije za datoteku za citanje
+    - ukoliko nije citati iz datoteke koju ste vi naveli
+UNOS_PODATAKA - sluzi za unos podataka
+    - upisuje se u onu datoteku koja je prvi argument komandne linije 
+PRAGMA PACK (1) - ukoliko imamo strukturu onda ce sizeof(struktura) biti bukvalna velicina 
+    - nece biti padding-a
+
+*/
