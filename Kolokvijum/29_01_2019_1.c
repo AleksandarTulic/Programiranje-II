@@ -5,13 +5,12 @@
 typedef struct rece{ char re[100];
 }RECE;
 
-RECE r[1000];
-
 char **to_array(int n,...)
 {
     va_list v;
     va_start(v, n);
     int i;
+    RECE r[1000];
 
     for (i=0;i<n;i++)
     {
@@ -23,6 +22,7 @@ char **to_array(int n,...)
 
     char **array = (char**)malloc(sizeof(char*) * n);
     for (i=0;i<n;i++) array[i] = r[i].re;
+    va_end(v);
     return array;
 }
 
