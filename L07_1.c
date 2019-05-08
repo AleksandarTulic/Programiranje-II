@@ -22,6 +22,16 @@ void dodaj_pocetak(CVOR **glava, STUDENT data)
     *glava = buffer;
 }
 
+void brisi_listu(CVOR **glava)
+{
+    while ( *glava )
+    {
+        CVOR *buffer = (*glava)->next;
+        free(*glava);
+        *glava = buffer;
+    }
+}
+
 void ispis(CVOR *glava)
 {
     while ( glava )
@@ -76,3 +86,66 @@ int main ()
     formatiran_upis(glava);
     return 0;
 }
+
+/*
+
+void dodaj_na_kraj(CVOR **glava, STUDENT data)
+{
+    CVOR *buffer = (CVOR*)malloc(sizeof(STUDENT));
+    buffer->info = data;
+    buffer->next = 0;
+
+    if ( *glava == 0 ) *glava = buffer;
+    else
+    {
+        while ( (*glava)->next ) *glava = (*glava)->next;
+        (*glava)->next = buffer;
+    }
+}
+
+void dodaj_ispred(CVOR *node, STUDENT data)
+{
+    CVOR *buffer = (CVOR*)malloc(sizeof(STUDENT));
+
+    buffer->info = node->info;
+    buffer->next = node->next;
+
+    node->info = data;
+    node->next = node;
+}
+
+void dodaj_iza(CVOR *node, STUDENT data)
+{
+    CVOR *buffer = (CVOR*)malloc(sizeof(STUDENT));
+
+    buffer->info = data;
+    buffer->next = node->next;
+
+    node->next = buffer;
+}
+
+void brisi_iza(CVOR *node)
+{
+    if ( node->next == 0 ) return;
+
+    node->next = node->next->next;
+    free(node->next);
+}
+
+void brisi_cvor(CVOR *node)
+{
+    if ( node->next == 0 )
+    {
+        free(node);
+    }
+    else
+    {
+        CVOR *buffer = node->next;
+        node->info = buffer->info;
+        node->next = buffer->next;
+
+        free(buffer);
+    }
+}
+
+*/
