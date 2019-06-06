@@ -1,6 +1,12 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <dos.h>
+#include <ctype.h>
+#include <windows.h>
+#define MAX 5
+#define MAXX 1000
 
 typedef struct film{
     char naziv[64];
@@ -11,166 +17,161 @@ typedef struct film{
 }FILM;
 
 typedef struct cvor{
-    FILM data;
-    struct cvor *left, *right, *roditelj;
+    FILM p;
+    struct cvor *left;
+    struct cvor *right;
 }CVOR;
 
-int flag = 0;
-
-FILM *find(CVOR *root, FILM *data)
+CVOR *new_cvor(FILM p)
 {
-    if ( root == 0 ) return NULL;
-    if ( strcmp(root->data.naziv, data->naziv) == 0 ) return &root->data;
-
-    return find(root->right, data) == NULL ? find(root->left, data) : find(root->right, data);
+    CVOR *new = (CVOR*)malloc(sizeof(CVOR));
+    new->left = new->right = 0;
+    new->p = p;
+    return new;
 }
 
-void dodaj(CVOR **root, CVOR *rod, FILM *f)
+int cmp(char *a, char *b)
 {
-    if ( *root == 0 )
+    char c[strlen(a)+1];strcpy(c, a);
+    char d[strlen(b)+1];strcpy(d, b);
+    int br = 0;
+    while (c[br]) c[br]=toupper(c[br]),br++;
+    br = 0;
+    while (d[br]) d[br]=toupper(d[br]),br++;
+
+    return strcmp(c, d);
+}
+
+CVOR *add_cvor(CVOR *root, FILM p)
+{
+    if ( root == 0 ) return new_cvor(p);
+    else if ( cmp(root->p.naziv, p.naziv) == 0 )
     {
-        CVOR *new = (CVOR*)malloc(sizeof(CVOR));
-        strcpy(new->data.glumci, f->glumci);
-        strcpy(new->data.zanr, f->zanr);
-        strcpy(new->data.reziser, f->reziser);
-        strcpy(new->data.naziv, f->naziv);
-        new->data.godina = f->godina;
-        new->roditelj = new->left = new->right = 0;
-        *root = new;
-        return;
+        strcpy(root->p.glumci, p.glumci);
+        strcpy(root->p.zanr, p.zanr);
+        strcpy(root->p.reziser, p.reziser);
+        root->p.godina = p.godina;
     }
-
-    if ( strcmp((*root)->data.naziv, f->naziv) == 0 )
-    {
-        strcpy((*root)->data.glumci, f->glumci);
-        strcpy((*root)->data.zanr, f->zanr);
-        strcpy((*root)->data.reziser, f->reziser);
-        strcpy((*root)->data.naziv, f->naziv);
-        (*root)->data.godina = f->godina;
-        return;
-    }
-    else if ( strcmp((*root)->data.naziv, f->naziv) == -1 ) dodaj(&(*root)->right, (*root)->roditelj, f);
-    else dodaj(&(*root)->left, (*root)->roditelj, f);
+    else if ( cmp(root->p.naziv, p.naziv) < 0 ) root->right = add_cvor(root->right, p);
+    else root->left = add_cvor(root->left, p);
+    return root;
 }
 
-void print(CVOR *root) //KLD
+CVOR *find(CVOR *root, FILM p)
 {
-    if ( root == 0 ) return;
-
-    printf("%s\n", root->data.naziv);
-    print(root->left);
-    print(root->right);
+    if ( root == 0 || cmp(p.naziv, root->p.naziv) == 0 ) return root;
+    else if ( cmp(root->p.naziv, p.naziv) < 0 ) return find(root->right, p);
+    else if ( cmp(root->p.naziv, p.naziv) > 0 ) return find(root->left, p);
+    else return 0;
 }
 
-void brisi(CVOR *root)
+CVOR *find_max(CVOR *root)
 {
-    if ( root )
-    {
-        brisi(root->left);
-        brisi(root->right);
+    while (root->right != 0) root = root->right;
+    return root;
+}
 
+CVOR *delete(CVOR *root, FILM p)
+{
+    if ( cmp(root->p.naziv, p.naziv) < 0 ) root->right = delete(root->right, p);
+    else if ( cmp(root->p.naziv, p.naziv) > 0 ) root->left = delete(root->left, p);
+    else if ( root->left == 0 )
+    {
+        CVOR *buff = root->right;
         free(root);
+        return buff;
     }
-}
-
-void print_for(CVOR *root) //LKD
-{
-    if ( root )
+    else if ( root->right == 0 )
     {
-        print_for(root->left);
-        printf("%s\n", root->data.naziv);
-        print_for(root->right);
-    }
-}
-
-int brisi_cvor(CVOR *root, FILM f)
-{
-    if ( root->right == 0 && root->left == 0 && strcmp(f.naziv, root->data.naziv) == 0 )
-    {
-        CVOR *buff = root->roditelj;
-        buff->left == root ? (buff->left = 0) : (buff->right = 0);
+        CVOR *buff = root->left;
         free(root);
-        return 1;
-    }
-    else if ( root->right == 0 && strcmp(f.naziv, root->data.naziv) == 0 )
-    {
-        CVOR *buff = root->roditelj;
-        buff->left == root ? (buff->left = root->left) : (buff->right = root->left);
-        buff = root->left;
-        buff->roditelj = root->roditelj;
-        free(root);
-        return 1;
-    }
-    else if ( root->left == 0 && strcmp(f.naziv, root->data.naziv) == 0 )
-    {
-        CVOR *buff = root->roditelj;
-        buff->left == root ? (buff->left = root->right) : (buff->right = root->right);
-        buff = root->right;
-        buff->roditelj = root->roditelj;
-        free(root);
-        return 1;
+        return buff;
     }
     else
     {
+        CVOR *buff = find_max(root->left);
+        root->p = buff->p;
+        root->left = delete(root->left, root->p);
     }
+
+    return root;
+}
+
+int try_delete(CVOR *root, FILM p)
+{
+    return find(root, p) == 0 ? 0 : (delete(root, p),1);
+}
+
+void inorder(CVOR *root)
+{
+    if ( root == 0 ) return;
+
+    inorder(root->left);
+    printf("NAZIV  : %s\n", root->p.naziv);
+    printf("GLUMCI : %s\n", root->p.glumci);
+    printf("ZANR   : %s\n", root->p.zanr);
+    printf("REZISER: %s\n", root->p.reziser);
+    printf("GODINA : %d\n\n", root->p.godina);
+    inorder(root->right);
+}
+
+void delete_all(CVOR *root)
+{
+    if ( root == 0 ) return;
+
+    delete_all(root->left);
+    delete_all(root->right);
+    free(root);
 }
 
 int main()
 {
+    int flag;
     CVOR *root = 0;
-    FILM f;
-    strcpy(f.glumci, "Nicolas Cage");
-    strcpy(f.naziv, "the");
-    strcpy(f.zanr, "Komedija");
-    strcpy(f.reziser, "Johny");
-    f.godina = 2018;
+    while (1)
+    {
+        if ( flag != '0' )
+        {
+        printf("===========================================================================\n");
+        printf("   Dodaj: 1 || Pretrazi: 2 || Ispisi: 3 || Obrisi film: 4 || Prekini: 0 \n");
+        printf("===========================================================================\n");}
+        scanf("%d", &flag);
 
-    dodaj(&root, 0, &f);
+        if ( flag == 0 ) break;
+        else if ( flag == 1 )
+        {
+            printf("\n\n");
+            printf("DODAJTE INF. ZA FILM:\n");
+            FILM f;
+            printf("REZISER: ");scanf("%s", f.reziser);
+            printf("ZANR: ");scanf("%s", f.zanr);
+            printf("NAZIV: ");scanf("%s", f.naziv);
+            printf("GLUMCI: ");scanf("%s", f.glumci);
+            printf("GODINA: ");scanf("%d", &f.godina);
 
-    strcpy(f.glumci, "Vjeverica");
-    strcpy(f.naziv, "five");
-    strcpy(f.zanr, "Akcija");
-    strcpy(f.reziser, "Webeer");
-    f.godina = 1992;
+            if ( root == 0 ) root = add_cvor(root, f);
+            else add_cvor(root, f);
+        }
+        else if ( flag == 2 )
+        {
+            printf("\n\n");FILM f;
+            printf("NAZIV FILMA: ");scanf("%s",f.naziv);
+            CVOR *buff = find(root, f);
+            if ( buff == 0 ) printf("FILM NIJE PRONADJEN!!!\n\n");
+            else printf("%s %s %s %d\n\n", buff->p.zanr, buff->p.reziser, buff->p.glumci, buff->p.godina);
+        }
+        else if ( flag == 3 ) inorder(root);
+        else if ( flag == 4 )
+        {
+            printf("\n\n");FILM f;
+            printf("NAZIV FILMA: ");scanf("%s",f.naziv);
 
-    dodaj(&root, 0, &f);
+            if ( try_delete(root, f) == 0 ) printf("FILM NIJE PRONADJEN!!!\n\n");
+            else printf("FILM JE OBRISAN!!!\n\n");
+        }
+        else printf("\n\nPOKUSAJTE PONOVO!!!\n\n");
+    }
 
-    strcpy(f.glumci, "Vjeverica");
-    strcpy(f.naziv, "wizards");
-    strcpy(f.zanr, "Akcija");
-    strcpy(f.reziser, "Webeer");
-    f.godina = 1992;
-
-    dodaj(&root, 0, &f);
-
-    strcpy(f.glumci, "Vjeverica");
-    strcpy(f.naziv, "jump");
-    strcpy(f.zanr, "Akcija");
-    strcpy(f.reziser, "Webeer");
-    f.godina = 1992;
-
-    dodaj(&root, 0, &f);
-
-    strcpy(f.glumci, "Vjeverica");
-    strcpy(f.naziv, "boxing");
-    strcpy(f.zanr, "Akcija");
-    strcpy(f.reziser, "Webeer");
-    f.godina = 1992;
-
-    dodaj(&root, 0, &f);
-
-    strcpy(f.glumci, "Vjeverica");
-    strcpy(f.naziv, "quickly!");
-    strcpy(f.zanr, "Akcija");
-    strcpy(f.reziser, "Webeer");
-    f.godina = 1992;
-
-    dodaj(&root, 0, &f);
-
-    print(root);
-
-    printf("\n\n");
-
-    print_for(root);
+    delete_all(root);
     return 0;
 }
