@@ -1,61 +1,53 @@
 #include <stdio.h>
-#include <string.h>
+#include <ctype.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <dos.h>
-#include <windows.h>
-#define MAX 10000
+#include <string.h>
 
 typedef struct stek{
-    char niz[MAX][20];
-    int tos;
+    char str[100];
+    struct stek *next;
+    struct stek *prev;
 }STEK;
 
-int isFULL(STEK *s)
+void add(STEK **head, char str[100])
 {
-    return s->tos == MAX - 1;
-}
+    STEK *new = (STEK*)malloc(sizeof(STEK));
+    strcpy(new->str, str);
+    new->next = 0;
+    new->prev = 0;
 
-int isEMPTY(STEK *s)
-{
-    return s->tos == -1;
-}
-
-void push(STEK *s, char r[])
-{
-    if ( isFULL(s) ) return;
-
-    int i = 0;++s->tos;
-    while ( r[i] )
+    if ( *head == 0 ) *head = new;
+    else
     {
-        s->niz[s->tos][i] = r[i];i++;
+        new->prev = *head;
+        (*head)->next = new;
+        *head = new;
     }
 }
 
-void print(STEK *s, FILE *fp)
+void add_read(STEK **head, FILE *fp)
 {
-    while ( !isEMPTY(s) ) fprintf(fp, "%s\n", s->niz[s->tos--]);
-
+    char str[100];
+    while ( fscanf(fp, "%s", str) != EOF ) add(head, str);
     fclose(fp);
 }
 
-int main(int br, char *a[])
+void ispis(STEK *head, FILE *fp)
 {
-    STEK s;
-    s.tos = -1;
-
-    FILE *fp1 = fopen(a[1], "r");
-    char rijec[101];
-
-    if ( fp1 == NULL ) return 0;
-
-    while ( fscanf(fp1, "%s\n", rijec) != EOF )
+    while ( head )
     {
-        push(&s, rijec);
+        fprintf(fp, "%s\n", head->str);
+        head = head->prev;
     }
+    fclose(fp);
+}
 
-    print(&s, fopen(a[2], "w"));
-
-    fclose(fp1);
+int main(int argc, char *argb[])
+{
+    STEK *head = 0;
+    FILE *fp = fopen(argb[1], "r");
+    add_read(&head, fp);
+    fp = fopen(argb[1], "w");
+    ispis(head, fp);
     return 0;
 }
