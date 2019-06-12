@@ -1,75 +1,84 @@
 #include <stdio.h>
+#include <ctype.h>
 #include <stdlib.h>
 #include <string.h>
-#include <windows.h>
 
-typedef struct cvor{
-    int data;
-    struct cvor *next;
-}CVOR;
+typedef struct stek{
+    int broj;
+    struct stek *next;
+    struct stek *pre;
+}STEK;
 
-void dodaj(CVOR **top, CVOR **begin, int data)
+STEK *add(STEK **head, int broj)
 {
-    CVOR *node = (CVOR*)malloc(sizeof(CVOR));
+    STEK *new = (STEK*)malloc(sizeof(STEK));
+    new->broj = broj;
+    new->next = 0;
+    new->pre = 0;
 
-    if ( *top != 0 ) (*top)->next = node;
-    else *begin = node;
-
-    node->data = data;
-    *top = node;
-    node->next = 0;
-}
-
-void pop(CVOR **top, CVOR *begin)
-{
-    if ( *top == 0 ) return;
-    while ( begin->next != *top ) begin = begin->next;
-
-    free(*top);
-    *top = begin;
-    (*top)->next = 0;
-}
-
-void pisi(CVOR *begin)
-{
-    while ( begin )
+    if ( *head == 0 ) *head = new;
+    else
     {
-        printf("%d\n", begin->data);
-        begin = begin->next;
+        (*head)->next = new;
+        new->pre = *head;
+        *head = new;
+    }
+
+    return new;
+}
+
+int delete_top(STEK **head)
+{
+    STEK *buff = (*head)->pre;
+    free(*head);
+    *head = buff;
+    return 1;
+}
+
+void ispis(STEK *head)
+{
+    if ( head )
+    {
+        printf("%d ", head->broj);
+        ispis(head->pre);
     }
 }
 
-void brisi(CVOR **begin)
+int delete(STEK **head)
 {
-    while ( *begin )
+    if ( *head == 0 ) return 0;
+
+    while ( *head )
     {
-        CVOR *buff = *begin;
-        *begin = (*begin)->next;
-        free(buff);
+        STEK *buff = (*head)->pre;
+        free(*head);
+        *head = buff;
     }
+
+    return 1;
 }
 
 int main()
 {
-    CVOR *top, *begin;
-    top = 0;
-    begin = 0;
+    STEK *head = 0;
+    add(&head, 5);
+    add(&head, 12);
+    add(&head, -1);
+    add(&head, 0);
+    add(&head, 1221);
+    add(&head, -49);
+    add(&head, 55991);
 
-    dodaj(&top, &begin, 12);
-    dodaj(&top, &begin, -5);
-    dodaj(&top, &begin, 45);
-    dodaj(&top, &begin, 999);
-    dodaj(&top, &begin, -1142);
+    ispis(head);
+    printf("\n");
 
-    pisi(begin);printf("\n");
+    delete_top(&head);
+    delete_top(&head);
 
-    pop(&top, begin);
-    pop(&top, begin);
+    ispis(head);
+    printf("\n");
 
-    pisi(begin);printf("\n");
-
-    brisi(&begin);
-
-    pisi(begin);
+    delete(&head);
+    ispis(head);
     return 0;
 }
