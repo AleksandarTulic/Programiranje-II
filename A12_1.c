@@ -3,83 +3,67 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct rij{
+typedef struct cvor{
     char srp[100];
     char eng[100];
-}RIJ;
-
-typedef struct cvor{
-    RIJ p;
     struct cvor *left;
     struct cvor *right;
 }CVOR;
 
-CVOR *new_cvor(RIJ p)
-{
-    CVOR *buff = (CVOR*)malloc(sizeof(CVOR));
-    buff->left = buff->right = 0;
-    strcpy(buff->p.eng, p.eng);
-    strcpy(buff->p.srp, p.srp);
-    return buff;
-}
-
-CVOR *add(CVOR *root, RIJ p)
-{
-    if ( root == 0 ) return new_cvor(p);
-    else if ( strcmp(root->p.srp, p.srp) == -1 ) root->right = add(root->right, p);
-    else if ( strcmp(root->p.srp, p.srp) == 1 ) root->left = add(root->left, p);
-    return root;
-}
-
-CVOR *find(CVOR *root, RIJ p)
-{
-    if ( root == 0 || strcmp(root->p.srp, p.srp) == 0 ) return root;
-    else if ( strcmp(root->p.srp, p.srp) == -1 ) return find(root->right, p);
-    else if ( strcmp(root->p.srp, p.srp) == 1 ) return find(root->left, p);
-    return 0;
-}
-
 void delete(CVOR *root)
 {
     if ( root == 0 ) return;
-
-    delete(root->left);
-    delete(root->right);
-    free(root);
+        delete(root->left);
+        delete(root->right);
+        free(root);
 }
 
-CVOR *load(FILE *fp)
+CVOR *new_cvor(char srp[100], char eng[100])
 {
-    RIJ a;
-    CVOR *buff = 0;
-    while ( fscanf(fp, "%s %s", a.srp, a.eng) != EOF )
-        if ( find(buff, a) == 0 )
-            if ( buff == 0 ) buff = add(buff, a);
-            else add(buff, a);
+    CVOR *new = (CVOR*)malloc(sizeof(CVOR));
+    new->left = new->right = 0;
+    strcpy(new->srp, srp);
+    strcpy(new->eng, eng);
+    return new;
+}
 
-    return buff;
+CVOR *add(CVOR *root, char srp[100], char eng[100])
+{
+    if ( root == 0 ) return new_cvor(srp, eng);
+    else if ( strcmp(root->srp, srp) < 0 ) root->right = add(root->right, srp, eng);
+    else if ( strcmp(root->srp, srp) > 0 ) root->left = add(root->left, srp, eng);
+    return root;
+}
+
+CVOR *find(CVOR *root, char srp[100])
+{
+    if ( root == 0 || strcmp(root->srp, srp) == 0 ) return root;
+    else if ( strcmp(root->srp, srp) < 0 ) return find(root->right, srp);
+    else return find(root->left, srp);
+}
+
+void inorder(CVOR *root)
+{
+    if ( root == 0 ) return;
+
+    inorder(root->left);
+    printf("%s\n", root->eng);
+    inorder(root->right);
 }
 
 int main(int argc, char *argb[])
 {
+    char s[100];
+    scanf("%s", s);
+
     CVOR *root = 0;
-    FILE *fp = fopen(argb[1], "r");
-    if ( fp == NULL ) return 0;
+    root = add(root, "auto", "car");
+    add(root, "kompjuter", "computer");
+    add(root, "skakanje", "jumping");
+    add(root, "kuhinja", "kitchen");
+    add(root, "pas", "dog");
 
-    root = load(fp);
-    fclose(fp);
-
-    while (1)
-    {
-        RIJ p;
-        printf("Unesite rijec: ");scanf("%s", p.srp);
-
-        CVOR *buff = find(root, p);
-
-        if ( buff == 0 ) return 0;
-        else printf("%s\n", buff->p.eng);
-    }
-
-    delete(root);
+    CVOR *buff = find(root, s);
+    if ( buff != 0 ) printf("ENG. %s\n", buff->eng);
     return 0;
 }
